@@ -46,8 +46,8 @@ class MockApi {
           (v) => User(
             id: Uuid().v4(),
             username: v['first_name'],
-            // 50% chance that the user will have an avatar
-            avatarUrl: _random.nextDouble() > 0.5 ? v['avatar'] : null,
+            // 85% chance that the user will have an avatar
+            avatarUrl: _random.nextDouble() < 0.85 ? v['avatar'] : null,
             // 15% chance that the user is online
             lastSeen: _random.nextDouble() > 0.15
                 ? DateTime.now().millisecondsSinceEpoch -
@@ -83,7 +83,9 @@ class MockApi {
         return GroupChat(
           id: Uuid().v4(),
           name: _capitalizeFirstLetter(v['word']),
-          members: Set.from([...members, _self]),
+          members: Map.fromEntries(
+            [...members, _self].map((v) => MapEntry(v.id, v)),
+          ),
           lastMessage: null, // Will be populated later
         );
       } else {
@@ -92,9 +94,6 @@ class MockApi {
         return DirectChat(
           self: _self,
           peer: member,
-          status: _random.nextDouble() < 0.7
-              ? MessageStatus.read
-              : MessageStatus.sent,
           lastMessage: null, // Will be populated later
         );
       }
@@ -166,8 +165,8 @@ class MockApi {
         final refSeq =
             i > 0 && _random.nextDouble() < 0.1 ? _random.nextInt(i) : null;
 
-        final sender = chat.members.elementAt(
-          _random.nextInt(chat.members.length - 1),
+        final sender = chat.members.values.elementAt(
+          _random.nextInt(chat.members.length),
         );
 
         // [sentAt] value is in range [now - 1e6, now] seconds for the first message,
@@ -331,7 +330,7 @@ class MockApi {
     final chat = GroupChat(
       id: Uuid().v4(),
       name: name,
-      members: _contacts.toSet(),
+      members: Map.fromEntries(_contacts.map((v) => MapEntry(v.id, v))),
       lastMessage: _message,
     );
 
@@ -366,6 +365,10 @@ class MockApi {
     );
 
     return _requestWrapper(message);
+  }
+
+  Future<User> getSelf() {
+    return _requestWrapper(_self);
   }
 }
 

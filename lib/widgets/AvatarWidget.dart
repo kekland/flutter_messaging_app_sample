@@ -86,6 +86,16 @@ class UsernameAvatarWidget extends StatelessWidget {
           color: color,
           shape: BoxShape.circle,
         ),
+        foregroundDecoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white38,
+              Colors.white.withOpacity(0.0),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )
+        ),
         child: Center(
           child: Text(
             username.substring(0, 2).toUpperCase(),

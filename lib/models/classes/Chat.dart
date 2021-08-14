@@ -4,7 +4,7 @@ import 'package:flutter_messaging_ui/models/classes/User.dart';
 abstract class Chat {
   final String id;
   final String name;
-  final Set<User> members;
+  final Map<String, User> members;
   final Message? lastMessage;
   final int? lastReadSeq;
 
@@ -42,14 +42,14 @@ class DirectChat implements Chat {
   DirectChat({
     required this.self,
     required this.peer,
-    this.status,
+    this.lastMessageStatus,
     this.lastMessage,
     this.lastReadSeq,
   }) : super();
 
   final User self;
   final User peer;
-  final MessageStatus? status;
+  final MessageStatus? lastMessageStatus;
   final Message? lastMessage;
   final int? lastReadSeq;
 
@@ -57,7 +57,7 @@ class DirectChat implements Chat {
   String get id => peer.id;
 
   @override
-  Set<User> get members => {self, peer};
+  Map<String, User> get members => {self.id: self, peer.id: peer};
 
   @override
   String get name => peer.username;
@@ -65,12 +65,14 @@ class DirectChat implements Chat {
   DirectChat copyWith({
     Message? lastMessage,
     int? lastReadSeq,
+    MessageStatus? lastMessageStatus,
   }) {
     return DirectChat(
       self: self,
       peer: peer,
       lastMessage: lastMessage ?? this.lastMessage,
       lastReadSeq: lastReadSeq ?? this.lastReadSeq,
+      lastMessageStatus: lastMessageStatus ?? this.lastMessageStatus,
     );
   }
 }
@@ -80,7 +82,7 @@ class GroupChat extends Chat {
   GroupChat({
     required String id,
     required String name,
-    required Set<User> members,
+    required Map<String, User> members,
     Message? lastMessage,
     int? lastReadSeq,
   }) : super(

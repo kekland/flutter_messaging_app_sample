@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_ui/models/providers/ChatListProvider.dart';
+import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
 import 'package:flutter_messaging_ui/pages/ChatListPage.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           elevation: 0.0,
         ),
+        scaffoldBackgroundColor: Colors.white,
       );
 
   ThemeData get darkThemeData => ThemeData(
@@ -41,6 +43,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) {
             final provider = ChatListProvider();
+            provider.initialize();
+            return provider;
+          },
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = UserProvider();
             provider.initialize();
             return provider;
           },

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_messaging_ui/models/classes/Message.dart';
+import 'package:flutter_messaging_ui/models/classes/User.dart';
+import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
 import 'package:flutter_messaging_ui/utils/extensions.dart';
 import 'package:flutter_messaging_ui/models/classes/Chat.dart';
 import 'package:flutter_messaging_ui/utils/time.dart';
 import 'package:flutter_messaging_ui/widgets/AvatarWidget.dart';
+import 'package:flutter_messaging_ui/widgets/message/MiniMessageWidget.dart';
+import 'package:provider/provider.dart';
 
 class ChatListItem extends StatelessWidget {
   const ChatListItem({
@@ -16,7 +20,16 @@ class ChatListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = context.watch<UserProvider>();
     final unreadMessages = chat.lastMessage!.seq - chat.lastReadSeq!;
+
+    User? sender;
+
+    if (userProvider.self?.id == chat.lastMessage!.senderId) {
+      sender = userProvider.self;
+    } else if (chat is GroupChat) {
+      sender = chat.members[chat.lastMessage!.senderId];
+    }
 
     return ListTile(
       leading: chat is DirectChat
@@ -38,10 +51,11 @@ class ChatListItem extends StatelessWidget {
               ),
             ),
           ),
-          if (chat is DirectChat) ...[
+          if (chat is DirectChat &&
+              chat.lastMessage?.senderId == userProvider.self?.id) ...[
             SizedBox(width: 8.0),
             Icon(
-              (chat as DirectChat).status == MessageStatus.read
+              (chat as DirectChat).lastMessageStatus == MessageStatus.read
                   ? Icons.done_all
                   : Icons.done,
               size: 16.0,
@@ -63,10 +77,9 @@ class ChatListItem extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                chat.lastMessage!.body.text,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: MiniMessageWidget(
+                message: chat.lastMessage!,
+                sender: sender,
               ),
             ),
             if (unreadMessages > 0) ...[
