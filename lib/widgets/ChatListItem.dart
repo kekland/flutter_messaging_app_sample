@@ -34,11 +34,11 @@ class ChatListItem extends StatelessWidget {
     return ListTile(
       leading: chat is DirectChat
           ? UserAvatarWidget(
-              size: 48.0,
+              size: 52.0,
               user: (chat as DirectChat).peer,
             )
           : UsernameAvatarWidget(
-              size: 48.0,
+              size: 52.0,
               username: chat.name,
             ),
       title: Row(

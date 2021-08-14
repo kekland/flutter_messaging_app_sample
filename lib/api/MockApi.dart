@@ -193,8 +193,12 @@ class MockApi {
       }
 
       // 20% chance that some messages might be unread
+      final lastSelfMessageIndex =
+          messages.lastIndexWhere((v) => v.senderId == _self.id);
+
       final lastReadSeq = _random.nextDouble() < 0.2
-          ? messages.last.seq - _random.nextInt(4)
+          ? _random
+              .nextInt(lastSelfMessageIndex == -1 ? 5 : lastSelfMessageIndex)
           : messages.last.seq;
 
       final lastMessageStatus =
