@@ -68,7 +68,6 @@ class _ChatPageState extends State<ChatPage> {
                 chat: widget.chat,
               ),
             ),
-            Divider(height: 1.0),
             ChatInput(),
           ],
         ),

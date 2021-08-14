@@ -180,15 +180,17 @@ class ImageMessageBodyWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-              vertical: 4.0,
+              horizontal: 6.0,
+              vertical: 2.0,
             ),
             child: Text(
               formatDateOfTime(
                 context: context,
                 dateTime: message.sentAtDate,
               ),
-              style: context.textTheme.caption,
+              style: context.textTheme.caption!.copyWith(
+                color: Colors.white,
+              ),
             ),
           ),
         ),

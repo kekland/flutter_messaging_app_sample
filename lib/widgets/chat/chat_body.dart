@@ -51,6 +51,19 @@ class _ChatBodyState extends State<ChatBody> {
         final hasMessageAbove = previousMessage?.senderId == message.senderId;
         final hasMessageBelow = nextMessage?.senderId == message.senderId;
 
+        final Widget? leading;
+
+        if (widget.chat is! DirectChat) {
+          leading = !hasMessageBelow && !isAuthor
+              ? UserAvatarWidget(
+                  user: user,
+                  size: 28.0,
+                )
+              : SizedBox(width: isAuthor ? 0.0 : 28.0);
+        } else {
+          leading = null;
+        }
+
         return Row(
           mainAxisAlignment:
               isAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -65,12 +78,7 @@ class _ChatBodyState extends State<ChatBody> {
                   hasMessageAbove: hasMessageAbove,
                   hasMessageBelow: hasMessageBelow,
                   isAccent: isAuthor,
-                  leading: !hasMessageBelow && !isAuthor
-                      ? UserAvatarWidget(
-                          user: user,
-                          size: 28.0,
-                        )
-                      : SizedBox(width: isAuthor ? 0.0 : 28.0),
+                  leading: leading,
                   child: MessageBodyWidget(
                     message: message,
                     sender: user,
