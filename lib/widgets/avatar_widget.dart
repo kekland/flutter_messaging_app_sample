@@ -90,7 +90,7 @@ class UsernameAvatarWidget extends StatelessWidget {
         foregroundDecoration: BoxDecoration(
             gradient: LinearGradient(
           colors: [
-            Colors.white38,
+            Colors.white24,
             Colors.white.withOpacity(0.0),
           ],
           begin: Alignment.topCenter,

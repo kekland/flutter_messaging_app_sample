@@ -8,7 +8,8 @@ import 'package:flutter_messaging_ui/utils/extensions.dart';
 import 'package:flutter_messaging_ui/models/classes/chat.dart';
 import 'package:flutter_messaging_ui/utils/time.dart';
 import 'package:flutter_messaging_ui/widgets/avatar_widget.dart';
-import 'package:flutter_messaging_ui/widgets/message/MiniMessageWidget.dart';
+import 'package:flutter_messaging_ui/widgets/message/mini_message_widget.dart';
+import 'package:flutter_messaging_ui/widgets/ticker_widget.dart';
 import 'package:provider/provider.dart';
 
 class ChatListItem extends StatelessWidget {
@@ -85,24 +86,11 @@ class ChatListItem extends StatelessWidget {
             ),
             if (unreadMessages > 0) ...[
               SizedBox(width: 8.0),
-              Container(
-                width: 20.0,
-                height: 20.0,
-                decoration: BoxDecoration(
-                  color: context.theme.accentColor,
-                  shape: BoxShape.circle,
+              TickerWidget(
+                child: Text(
+                  unreadMessages.toString(),
                 ),
-                child: Center(
-                  child: Text(
-                    unreadMessages.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-              )
+              ),
             ],
           ],
         ),

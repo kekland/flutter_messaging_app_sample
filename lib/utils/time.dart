@@ -26,6 +26,17 @@ bool isThisYear(DateTime dateTime) {
   return dateTime.year == now.year;
 }
 
+String formatDateOfTime({
+  required BuildContext context,
+  required DateTime dateTime,
+}) {
+  final localizations = MaterialLocalizations.of(context);
+
+  return localizations.formatTimeOfDay(
+    TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+  );
+}
+
 String formatAbsoluteShortDateTime({
   required BuildContext context,
   required DateTime dateTime,

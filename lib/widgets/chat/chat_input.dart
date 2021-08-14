@@ -10,6 +10,29 @@ class ChatInput extends StatefulWidget {
 
 class _ChatInputState extends State<ChatInput>
     with SingleTickerProviderStateMixin {
+  late final TextEditingController _controller;
+  final _actionValueNotifier = ValueNotifier<CrossFadeState>(
+    CrossFadeState.showFirst,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+
+    _controller.addListener(() {
+      _actionValueNotifier.value = _controller.text.isNotEmpty
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,6 +63,7 @@ class _ChatInputState extends State<ChatInput>
                 ),
                 Expanded(
                   child: TextField(
+                    controller: _controller,
                     minLines: 1,
                     maxLines: 6,
                     style: TextStyle(
@@ -54,22 +78,30 @@ class _ChatInputState extends State<ChatInput>
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 56.0,
-                  height: 56.0,
-                  child: IconButton(
-                    icon: Icon(Icons.attach_file_rounded),
-                    color: context.theme.iconTheme.color!.withOpacity(0.3),
-                    onPressed: () {},
-                  ),
-                ),
-                SizedBox(
-                  width: 56.0,
-                  height: 56.0,
-                  child: IconButton(
-                    icon: Icon(Icons.send_rounded),
-                    color: context.theme.accentColor,
-                    onPressed: () {},
+                ValueListenableBuilder<CrossFadeState>(
+                  valueListenable: _actionValueNotifier,
+                  builder: (context, state, _) => AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 100),
+                    crossFadeState: state,
+                    alignment: Alignment.center,
+                    firstChild: SizedBox(
+                      width: 56.0,
+                      height: 56.0,
+                      child: IconButton(
+                        icon: Icon(Icons.attach_file_rounded),
+                        color: context.theme.iconTheme.color!.withOpacity(0.3),
+                        onPressed: () {},
+                      ),
+                    ),
+                    secondChild: SizedBox(
+                      width: 56.0,
+                      height: 56.0,
+                      child: IconButton(
+                        icon: Icon(Icons.send_rounded),
+                        color: context.theme.accentColor,
+                        onPressed: () {},
+                      ),
+                    ),
                   ),
                 ),
               ],

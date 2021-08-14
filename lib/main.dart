@@ -12,7 +12,7 @@ void main() {
 class MyApp extends StatelessWidget {
   ThemeData get lightThemeData => ThemeData(
         accentColor: Colors.blue,
-        primaryColor: Colors.blue,
+        primaryColor: Colors.blue.shade200,
         brightness: Brightness.light,
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.white,
@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           elevation: 0.0,
         ),
+        cardColor: Color(0xFF202020),
         scaffoldBackgroundColor: Color(0xFF101010),
         dividerColor: Colors.black54,
       );
