@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_ui/models/providers/ChatListProvider.dart';
+import 'package:flutter_messaging_ui/models/providers/ThemeProvider.dart';
 import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
 import 'package:flutter_messaging_ui/pages/ChatListPage.dart';
 import 'package:provider/provider.dart';
@@ -58,10 +59,16 @@ class MyApp extends StatelessWidget {
           },
           lazy: false,
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+          lazy: false,
+        ),
       ],
       builder: (context, _) => MaterialApp(
         title: 'Messenger',
         theme: lightThemeData,
+        darkTheme: darkThemeData,
+        themeMode: context.watch<ThemeProvider>().themeMode,
         home: ChatListPage(),
       ),
     );

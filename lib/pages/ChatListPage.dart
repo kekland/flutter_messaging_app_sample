@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_ui/models/providers/ChatListProvider.dart';
 import 'package:flutter_messaging_ui/widgets/ChatListItem.dart';
+import 'package:flutter_messaging_ui/widgets/DrawerWidget.dart';
 import 'package:provider/provider.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -87,7 +88,7 @@ class _ChatListPageState extends State<ChatListPage>
         backwardsCompatibility: false,
       ),
       drawer: Drawer(
-        child: Container(),
+        child: DrawerWidget(),
       ),
       floatingActionButton: AnimatedBuilder(
         animation: _fabAnimation,
