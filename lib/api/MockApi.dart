@@ -71,8 +71,8 @@ class MockApi {
     final tempContacts = List.of(contacts);
 
     return json.map<Chat>((v) {
-      // 10% chance of being a group chat
-      final isGroupChat = _random.nextDouble() < 0.1;
+      // 50% chance of being a group chat
+      final isGroupChat = _random.nextDouble() < 0.5;
 
       if (isGroupChat) {
         // From 2 to 7 members, excluding self
@@ -92,6 +92,9 @@ class MockApi {
         return DirectChat(
           self: _self,
           peer: member,
+          status: _random.nextDouble() < 0.7
+              ? MessageStatus.read
+              : MessageStatus.sent,
           lastMessage: null, // Will be populated later
         );
       }
@@ -173,10 +176,7 @@ class MockApi {
             messages.isNotEmpty ? messages.last.sentAt : null;
 
         final sentAt = lastMessageSentAt != null
-            ? lastMessageSentAt +
-                _random.nextInt(
-                  DateTime.now().millisecondsSinceEpoch - lastMessageSentAt,
-                )
+            ? lastMessageSentAt + _random.nextInt(1000000)
             : DateTime.now().millisecondsSinceEpoch -
                 _random.nextInt(1000000000);
 
@@ -193,9 +193,15 @@ class MockApi {
         );
       }
 
-      final newChat = Chat.withLastMessage(
+      // 20% chance that some messages might be unread
+      final lastReadSeq = _random.nextDouble() < 0.2
+          ? messages.last.seq - _random.nextInt(4)
+          : messages.last.seq;
+
+      final newChat = Chat.copyWith(
         chat: chat,
         lastMessage: messages.last,
+        lastReadSeq: lastReadSeq,
       );
 
       result[newChat] = [
@@ -249,7 +255,10 @@ class MockApi {
   }
 
   Future<List<Chat>> getChats() async {
-    return _requestWrapper(chats.values.toList());
+    final values = chats.values.toList();
+    values.sort((a, b) => b.lastMessage!.sentAt - a.lastMessage!.sentAt);
+
+    return _requestWrapper(values);
   }
 
   /// Returns [count] messages that are before [lastSeq]. Set [lastSeq] to `0` to get the latest messages.
@@ -350,7 +359,14 @@ class MockApi {
     );
 
     messages[chatId]!.add(message);
-    chats[chatId] = Chat.withLastMessage(chat: chat, lastMessage: message);
+    chats[chatId] = Chat.copyWith(
+      chat: chat,
+      lastMessage: message,
+      lastReadSeq: message.seq,
+    );
+
     return _requestWrapper(message);
   }
 }
+
+final api = MockApi();

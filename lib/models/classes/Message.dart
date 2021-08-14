@@ -1,4 +1,6 @@
-class MessageBody {}
+abstract class MessageBody {
+  String get text;
+}
 
 class TextMessageBody extends MessageBody {
   final String text;
@@ -18,6 +20,8 @@ class FileMessageBody extends MessageBody {
     this.fileName,
     this.fileSize,
   });
+
+  String get text => fileName != null ? 'File: $fileName' : '[File]';
 }
 
 class ImageMessageBody extends MessageBody {
@@ -32,11 +36,15 @@ class ImageMessageBody extends MessageBody {
     required this.width,
     required this.height,
   });
+
+  String get text => '[Image]';
 }
 
 abstract class ActionMessageBody extends MessageBody {}
 
-class ChatCreatedActionMessageBody implements ActionMessageBody {}
+class ChatCreatedActionMessageBody implements ActionMessageBody {
+  String get text => 'Chat created';
+}
 
 class MessageExtras {
   // A [seq] of a message to which this message is a reply
@@ -62,4 +70,11 @@ class Message {
     required this.sentAt,
     this.extra,
   });
+
+  DateTime get sentAtDate => DateTime.fromMillisecondsSinceEpoch(sentAt);
+}
+
+enum MessageStatus {
+  sent,
+  read,
 }

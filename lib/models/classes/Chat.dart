@@ -6,22 +6,31 @@ abstract class Chat {
   final String name;
   final Set<User> members;
   final Message? lastMessage;
+  final int? lastReadSeq;
 
   Chat({
     required this.id,
     required this.name,
     required this.members,
     required this.lastMessage,
+    this.lastReadSeq,
   });
 
-  static withLastMessage({
+  static copyWith({
     required Chat chat,
-    required Message lastMessage,
+    Message? lastMessage,
+    int? lastReadSeq,
   }) {
     if (chat is DirectChat) {
-      return chat.withLastMessage(lastMessage);
+      return chat.copyWith(
+        lastMessage: lastMessage,
+        lastReadSeq: lastReadSeq,
+      );
     } else if (chat is GroupChat) {
-      return chat.withLastMessage(lastMessage);
+      return chat.copyWith(
+        lastMessage: lastMessage,
+        lastReadSeq: lastReadSeq,
+      );
     }
 
     return null;
@@ -33,12 +42,16 @@ class DirectChat implements Chat {
   DirectChat({
     required this.self,
     required this.peer,
+    this.status,
     this.lastMessage,
+    this.lastReadSeq,
   }) : super();
 
   final User self;
   final User peer;
+  final MessageStatus? status;
   final Message? lastMessage;
+  final int? lastReadSeq;
 
   @override
   String get id => peer.id;
@@ -49,11 +62,15 @@ class DirectChat implements Chat {
   @override
   String get name => peer.username;
 
-  DirectChat withLastMessage(Message lastMessage) {
+  DirectChat copyWith({
+    Message? lastMessage,
+    int? lastReadSeq,
+  }) {
     return DirectChat(
       self: self,
       peer: peer,
-      lastMessage: lastMessage,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastReadSeq: lastReadSeq ?? this.lastReadSeq,
     );
   }
 }
@@ -65,19 +82,25 @@ class GroupChat extends Chat {
     required String name,
     required Set<User> members,
     Message? lastMessage,
+    int? lastReadSeq,
   }) : super(
           id: id,
           name: name,
           members: members,
           lastMessage: lastMessage,
+          lastReadSeq: lastReadSeq,
         );
 
-  GroupChat withLastMessage(Message lastMessage) {
+  GroupChat copyWith({
+    Message? lastMessage,
+    int? lastReadSeq,
+  }) {
     return GroupChat(
       id: id,
       name: name,
       members: members,
-      lastMessage: lastMessage,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastReadSeq: lastReadSeq ?? this.lastReadSeq,
     );
   }
 }
