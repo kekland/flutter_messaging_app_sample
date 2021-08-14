@@ -5,8 +5,8 @@ import 'package:flutter_messaging_ui/utils/extensions.dart';
 
 import 'package:flutter_messaging_ui/utils/time.dart';
 
-class MessageBodyWidget extends StatelessWidget {
-  const MessageBodyWidget({
+class TextMessageBodyWidget extends StatelessWidget {
+  const TextMessageBodyWidget({
     Key? key,
     required this.message,
     required this.sender,
@@ -136,6 +136,101 @@ class MessageBodyWidget extends StatelessWidget {
         baseOffset: 0,
         extentOffset: textSpan.toPlainText().length,
       ),
+    );
+  }
+}
+
+class ImageMessageBodyWidget extends StatelessWidget {
+  const ImageMessageBodyWidget({
+    Key? key,
+    required this.message,
+    required this.sender,
+    required this.isAuthor,
+    required this.hasMessageAbove,
+    required this.isDirectChat,
+  }) : super(key: key);
+
+  final Message message;
+  final User sender;
+  final bool isAuthor;
+  final bool hasMessageAbove;
+  final bool isDirectChat;
+
+  @override
+  Widget build(BuildContext context) {
+    final body = message.body as ImageMessageBody;
+
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(2.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: Image.network(
+              body.thumbnailUrl,
+            ),
+          ),
+        ),
+        Positioned(
+          right: 6.0,
+          bottom: 6.0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black45,
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: 4.0,
+            ),
+            child: Text(
+              formatDateOfTime(
+                context: context,
+                dateTime: message.sentAtDate,
+              ),
+              style: context.textTheme.caption,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MessageBodyWidget extends StatelessWidget {
+  const MessageBodyWidget({
+    Key? key,
+    required this.message,
+    required this.sender,
+    required this.isAuthor,
+    required this.hasMessageAbove,
+    required this.isDirectChat,
+  }) : super(key: key);
+
+  final Message message;
+  final User sender;
+  final bool isAuthor;
+  final bool hasMessageAbove;
+  final bool isDirectChat;
+
+  @override
+  Widget build(BuildContext context) {
+    if (message.body is ImageMessageBody) {
+      return ImageMessageBodyWidget(
+        message: message,
+        hasMessageAbove: hasMessageAbove,
+        isAuthor: isAuthor,
+        isDirectChat: isDirectChat,
+        sender: sender,
+      );
+    }
+
+    return TextMessageBodyWidget(
+      message: message,
+      hasMessageAbove: hasMessageAbove,
+      isAuthor: isAuthor,
+      isDirectChat: isDirectChat,
+      sender: sender,
     );
   }
 }

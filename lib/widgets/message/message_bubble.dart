@@ -68,7 +68,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final largeRadius = Radius.circular(12.0);
+    final largeRadius = Radius.circular(16.0);
     final smallRadius = Radius.circular(4.0);
 
     final BorderRadius borderRadius;
