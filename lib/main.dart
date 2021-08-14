@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
           elevation: 0.0,
         ),
         scaffoldBackgroundColor: Colors.white,
+        dividerColor: Colors.black12,
       );
 
   ThemeData get darkThemeData => ThemeData(
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           elevation: 0.0,
         ),
         scaffoldBackgroundColor: Color(0xFF101010),
+        dividerColor: Colors.black54,
       );
 
   // This widget is the root of your application.
@@ -59,7 +61,7 @@ class MyApp extends StatelessWidget {
       ],
       builder: (context, _) => MaterialApp(
         title: 'Messenger',
-        theme: darkThemeData,
+        theme: lightThemeData,
         home: ChatListPage(),
       ),
     );

@@ -60,9 +60,13 @@ class _ChatListPageState extends State<ChatListPage>
     Widget body;
 
     if (value != null) {
-      body = ListView.builder(
+      body = ListView.separated(
         itemCount: value.length,
         itemBuilder: (context, i) => ChatListItem(chat: value[i]),
+        separatorBuilder: (context, i) => Padding(
+          padding: const EdgeInsets.only(left: 72.0),
+          child: Divider(height: 1),
+        ),
       );
     } else {
       body = Center(child: CircularProgressIndicator());

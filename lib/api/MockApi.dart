@@ -128,7 +128,7 @@ class MockApi {
     // Get random images
     final imageResponse = await http.get(
       Uri.parse(
-        'https://random-data-api.com/api/lorem_pixel/random_lorem_pixel?size=100',
+        'https://random-data-api.com/api/lorem_pixel/random_lorem_pixel?size=25',
       ),
     );
 
@@ -152,8 +152,8 @@ class MockApi {
 
       final messages = <Message>[];
       for (var i = 0; i < messageCount; i++) {
-        // 10% chance of being an image
-        final isImage = _random.nextDouble() < 0.1;
+        // 20% chance of being an image
+        final isImage = _random.nextDouble() < 0.2;
 
         final body = isImage
             ? imageBodies[_random.nextInt(imageBodies.length)]
@@ -197,11 +197,20 @@ class MockApi {
           ? messages.last.seq - _random.nextInt(4)
           : messages.last.seq;
 
-      final newChat = Chat.copyWith(
-        chat: chat,
-        lastMessage: messages.last,
-        lastReadSeq: lastReadSeq,
-      );
+      final lastMessageStatus =
+          _random.nextDouble() < 0.85 ? MessageStatus.read : MessageStatus.sent;
+
+      final newChat = chat is DirectChat
+          ? chat.copyWith(
+              lastMessage: messages.last,
+              lastReadSeq: lastReadSeq,
+              lastMessageStatus:
+                  messages.last.senderId == _self.id ? lastMessageStatus : null,
+            )
+          : (chat as GroupChat).copyWith(
+              lastMessage: messages.last,
+              lastReadSeq: lastReadSeq,
+            );
 
       result[newChat] = [
         Message(
