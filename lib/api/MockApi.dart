@@ -5,20 +5,23 @@ import 'package:flutter_messaging_ui/models/classes/Chat.dart';
 import 'package:flutter_messaging_ui/models/classes/Message.dart';
 import 'package:flutter_messaging_ui/models/classes/User.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 String _capitalizeFirstLetter(String word) {
   return word.substring(0, 1).toUpperCase() + word.substring(1);
 }
 
-// Imagine this class as being a mock backend for the app
-class MockBackend {
-  final List<User> contacts;
-  final List<Chat> chats;
+// Imagine this class as being a mock API for the app
+class MockApi {
+  final Map<String, User> contacts;
+  final Map<String, Chat> chats;
   final Map<String, List<Message>> messages;
+  final Duration delay;
 
-  MockBackend()
-      : contacts = [],
-        chats = [],
+  /// [delay] is the delay for requests. See [_requestWrapper] for more info.
+  MockApi({this.delay = const Duration(milliseconds: 500)})
+      : contacts = {},
+        chats = {},
         messages = {};
 
   User get _self => User(
@@ -41,7 +44,7 @@ class MockBackend {
     return json
         .map<User>(
           (v) => User(
-            id: v['uid'],
+            id: Uuid().v4(),
             username: v['first_name'],
             // 50% chance that the user will have an avatar
             avatarUrl: _random.nextDouble() > 0.5 ? v['avatar'] : null,
@@ -78,7 +81,7 @@ class MockBackend {
         final members = tempContacts.sublist(0, memberCount);
 
         return GroupChat(
-          id: v['uid'],
+          id: Uuid().v4(),
           name: _capitalizeFirstLetter(v['word']),
           members: Set.from([...members, _self]),
           lastMessage: null, // Will be populated later
@@ -179,7 +182,7 @@ class MockBackend {
 
         messages.add(
           Message(
-            seq: messages.length,
+            seq: messages.length + 2,
             body: body,
             senderId: sender.id,
             sentAt: sentAt,
@@ -190,20 +193,20 @@ class MockBackend {
         );
       }
 
-      final newChat = chat is DirectChat
-          ? DirectChat(
-              self: _self,
-              peer: chat.peer,
-              lastMessage: messages.last,
-            )
-          : GroupChat(
-              id: chat.id,
-              name: chat.name,
-              members: chat.members,
-              lastMessage: messages.last,
-            );
+      final newChat = Chat.withLastMessage(
+        chat: chat,
+        lastMessage: messages.last,
+      );
 
-      result[newChat] = messages;
+      result[newChat] = [
+        Message(
+          seq: 1,
+          body: ChatCreatedActionMessageBody(),
+          sentAt: messages.first.sentAt,
+          senderId: 'bot',
+        ),
+        ...messages,
+      ];
     }
 
     return result;
@@ -216,8 +219,13 @@ class MockBackend {
       chats: _tempChats,
     );
 
-    contacts.addAll(_contacts);
-    chats.addAll(_chatsAndMessages.keys);
+    for (final contact in _contacts) {
+      contacts[contact.id] = contact;
+    }
+
+    for (final chat in _chatsAndMessages.keys) {
+      chats[chat.id] = chat;
+    }
 
     for (final entry in _chatsAndMessages.entries) {
       final id = entry.key.id;
@@ -225,5 +233,124 @@ class MockBackend {
       messages[id] ??= <Message>[];
       messages[id]!.addAll(entry.value);
     }
+  }
+
+  /// Adds an artificial delay to the API methods to simulate a real environment
+  Future<T> _requestWrapper<T>(T response) async {
+    if (delay.inMilliseconds > 0) {
+      await Future.delayed(delay);
+    }
+
+    return response;
+  }
+
+  Future<List<User>> getContacts() async {
+    return _requestWrapper(contacts.values.toList());
+  }
+
+  Future<List<Chat>> getChats() async {
+    return _requestWrapper(chats.values.toList());
+  }
+
+  /// Returns [count] messages that are before [lastSeq]. Set [lastSeq] to `0` to get the latest messages.
+  Future<List<Message>> getPaginatedMessagesForChat({
+    required String chatId,
+    required int lastSeq,
+    int count = 20,
+  }) async {
+    final _messages = messages[chatId];
+
+    if (_messages == null) throw Exception('No chat with id $chatId found.');
+
+    if (lastSeq == 0) {
+      return _messages.sublist(max(0, _messages.length - count));
+    } else {
+      return _messages.sublist(max(0, lastSeq - count - 1), lastSeq - 1);
+    }
+  }
+
+  Future<DirectChat> createDirectChat({required String contactId}) async {
+    final contact = contacts[contactId];
+    final isExistingChat = chats[contactId] != null;
+
+    if (contact == null) {
+      throw Exception('No contact with id $contactId found.');
+    }
+
+    if (isExistingChat) {
+      return chats[contactId] as DirectChat;
+    } else {
+      final _message = Message(
+        seq: 1,
+        body: ChatCreatedActionMessageBody(),
+        sentAt: DateTime.now().millisecondsSinceEpoch,
+        senderId: 'bot',
+      );
+
+      final chat = DirectChat(
+        self: _self,
+        peer: contact,
+        lastMessage: _message,
+      );
+
+      messages[chat.id] = [_message];
+      chats[chat.id] = chat;
+
+      return _requestWrapper(chat);
+    }
+  }
+
+  Future<GroupChat> createGroupChat({
+    required String name,
+    required List<String> contactIds,
+  }) async {
+    final _contacts = contactIds
+        .map((id) => contacts[id])
+        .where((v) => v != null)
+        .cast<User>()
+        .toList();
+
+    _contacts.add(_self);
+
+    final _message = Message(
+      seq: 1,
+      body: ChatCreatedActionMessageBody(),
+      sentAt: DateTime.now().millisecondsSinceEpoch,
+      senderId: 'bot',
+    );
+
+    final chat = GroupChat(
+      id: Uuid().v4(),
+      name: name,
+      members: _contacts.toSet(),
+      lastMessage: _message,
+    );
+
+    messages[chat.id] = [_message];
+    chats[chat.id] = chat;
+
+    return _requestWrapper(chat);
+  }
+
+  Future<Message> sendMessage({
+    required String chatId,
+    required MessageBody body,
+    MessageExtras? extra,
+  }) async {
+    final chat = chats[chatId];
+
+    if (chat == null) throw Exception('No chat with id $chatId found.');
+
+    final message = Message(
+      seq: messages[chatId]!.length + 1,
+      body: body,
+      extra: extra,
+      senderId: _self.id,
+      sentAt: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    messages[chatId]!.add(message);
+    chats[chatId] = Chat.withLastMessage(chat: chat, lastMessage: message);
+    return _requestWrapper(message);
   }
 }

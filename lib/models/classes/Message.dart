@@ -34,6 +34,10 @@ class ImageMessageBody extends MessageBody {
   });
 }
 
+abstract class ActionMessageBody extends MessageBody {}
+
+class ChatCreatedActionMessageBody implements ActionMessageBody {}
+
 class MessageExtras {
   // A [seq] of a message to which this message is a reply
   final int? refSeq;
@@ -44,18 +48,18 @@ class MessageExtras {
 }
 
 class Message {
-  // Messages are ordered by incrementing [seq] value, starting from 0.
+  // Messages are ordered by incrementing [seq] value, starting from 1.
   final int seq;
   final String senderId;
   final MessageBody body;
   final int sentAt;
-  final MessageExtras extra;
+  MessageExtras? extra;
 
   Message({
     required this.seq,
     required this.senderId,
     required this.body,
-    required this.extra,
     required this.sentAt,
+    this.extra,
   });
 }

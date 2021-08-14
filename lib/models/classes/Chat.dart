@@ -13,8 +13,22 @@ abstract class Chat {
     required this.members,
     required this.lastMessage,
   });
+
+  static withLastMessage({
+    required Chat chat,
+    required Message lastMessage,
+  }) {
+    if (chat is DirectChat) {
+      return chat.withLastMessage(lastMessage);
+    } else if (chat is GroupChat) {
+      return chat.withLastMessage(lastMessage);
+    }
+
+    return null;
+  }
 }
 
+/// [DirectChat]'s [id] field is equal to peer's [id].
 class DirectChat implements Chat {
   DirectChat({
     required this.self,
@@ -34,8 +48,17 @@ class DirectChat implements Chat {
 
   @override
   String get name => peer.username;
+
+  DirectChat withLastMessage(Message lastMessage) {
+    return DirectChat(
+      self: self,
+      peer: peer,
+      lastMessage: lastMessage,
+    );
+  }
 }
 
+/// [GroupChat]'s [id] field is a generated [UUID] string.
 class GroupChat extends Chat {
   GroupChat({
     required String id,
@@ -48,4 +71,13 @@ class GroupChat extends Chat {
           members: members,
           lastMessage: lastMessage,
         );
+
+  GroupChat withLastMessage(Message lastMessage) {
+    return GroupChat(
+      id: id,
+      name: name,
+      members: members,
+      lastMessage: lastMessage,
+    );
+  }
 }
