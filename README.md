@@ -1,16 +1,11 @@
 # flutter_messaging_ui
 
-A new Flutter project.
+Haven't really seen a messaging app sample made in Flutter so trying to make my own now. A Telegram copycat :P
 
-## Getting Started
+Work in progress.
 
-This project is a starting point for a Flutter application.
+Currently uses a mock API, but might add in Firebase to the mix later.
 
-A few resources to get you started if this is your first Flutter project:
+# Contact me
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- E-mail: `kk.erzhan@gmail.com`
