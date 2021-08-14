@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter_messaging_ui/models/classes/Chat.dart';
-import 'package:flutter_messaging_ui/models/classes/Message.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
+import 'package:flutter_messaging_ui/models/classes/chat.dart';
+import 'package:flutter_messaging_ui/models/classes/message.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 

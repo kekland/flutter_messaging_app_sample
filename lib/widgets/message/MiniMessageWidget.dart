@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_messaging_ui/models/classes/Message.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
-import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
+import 'package:flutter_messaging_ui/models/classes/message.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
+import 'package:flutter_messaging_ui/models/providers/user_provider.dart';
 import 'package:flutter_messaging_ui/utils/extensions.dart';
 import 'package:provider/provider.dart';
 

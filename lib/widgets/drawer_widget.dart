@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_ui/models/providers/ThemeProvider.dart';
-import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
+import 'package:flutter_messaging_ui/models/providers/theme_provider.dart';
+import 'package:flutter_messaging_ui/models/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_messaging_ui/utils/extensions.dart';
 

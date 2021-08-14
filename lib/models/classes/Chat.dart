@@ -1,5 +1,5 @@
-import 'package:flutter_messaging_ui/models/classes/Message.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
+import 'package:flutter_messaging_ui/models/classes/message.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
 
 abstract class Chat {
   final String id;

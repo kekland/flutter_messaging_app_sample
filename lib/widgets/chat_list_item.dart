@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_messaging_ui/models/classes/Message.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
-import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
+import 'package:flutter_messaging_ui/models/classes/message.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
+import 'package:flutter_messaging_ui/models/providers/user_provider.dart';
+import 'package:flutter_messaging_ui/pages/chat_page.dart';
 import 'package:flutter_messaging_ui/utils/extensions.dart';
-import 'package:flutter_messaging_ui/models/classes/Chat.dart';
+import 'package:flutter_messaging_ui/models/classes/chat.dart';
 import 'package:flutter_messaging_ui/utils/time.dart';
-import 'package:flutter_messaging_ui/widgets/AvatarWidget.dart';
+import 'package:flutter_messaging_ui/widgets/avatar_widget.dart';
 import 'package:flutter_messaging_ui/widgets/message/MiniMessageWidget.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,14 @@ class ChatListItem extends StatelessWidget {
   }) : super(key: key);
 
   final Chat chat;
+
+  void _openChat(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChatPage(chat: chat),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +41,7 @@ class ChatListItem extends StatelessWidget {
     }
 
     return ListTile(
-      leading: chat is DirectChat
-          ? UserAvatarWidget(
-              size: 52.0,
-              user: (chat as DirectChat).peer,
-            )
-          : UsernameAvatarWidget(
-              size: 52.0,
-              username: chat.name,
-            ),
+      leading: ChatAvatar(chat: chat),
       title: Row(
         children: [
           Expanded(
@@ -106,7 +107,7 @@ class ChatListItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {},
+      onTap: () => _openChat(context),
     );
   }
 }

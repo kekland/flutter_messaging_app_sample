@@ -1,7 +1,7 @@
 // Import the test package and Counter class
-import 'package:flutter_messaging_ui/api/MockApi.dart';
-import 'package:flutter_messaging_ui/models/classes/Chat.dart';
-import 'package:flutter_messaging_ui/models/classes/Message.dart';
+import 'package:flutter_messaging_ui/api/mock_api.dart';
+import 'package:flutter_messaging_ui/models/classes/chat.dart';
+import 'package:flutter_messaging_ui/models/classes/message.dart';
 import 'package:test/test.dart';
 
 void main() {

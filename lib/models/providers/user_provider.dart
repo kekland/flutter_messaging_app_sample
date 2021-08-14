@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_messaging_ui/api/MockApi.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
+import 'package:flutter_messaging_ui/api/mock_api.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
 
 class UserProvider extends ChangeNotifier {
   UserProvider();

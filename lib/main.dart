@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_ui/models/providers/ChatListProvider.dart';
-import 'package:flutter_messaging_ui/models/providers/ThemeProvider.dart';
-import 'package:flutter_messaging_ui/models/providers/UserProvider.dart';
-import 'package:flutter_messaging_ui/pages/ChatListPage.dart';
+import 'package:flutter_messaging_ui/models/providers/chat_list_provider.dart';
+import 'package:flutter_messaging_ui/models/providers/theme_provider.dart';
+import 'package:flutter_messaging_ui/models/providers/user_provider.dart';
+import 'package:flutter_messaging_ui/pages/chat_list_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {

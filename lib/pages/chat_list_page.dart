@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_ui/models/providers/ChatListProvider.dart';
-import 'package:flutter_messaging_ui/widgets/ChatListItem.dart';
-import 'package:flutter_messaging_ui/widgets/DrawerWidget.dart';
+import 'package:flutter_messaging_ui/models/providers/chat_list_provider.dart';
+import 'package:flutter_messaging_ui/widgets/chat_list_item.dart';
+import 'package:flutter_messaging_ui/widgets/drawer_widget.dart';
 import 'package:provider/provider.dart';
 
 class ChatListPage extends StatefulWidget {

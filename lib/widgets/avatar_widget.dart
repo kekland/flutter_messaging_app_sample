@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_ui/models/classes/User.dart';
+import 'package:flutter_messaging_ui/models/classes/chat.dart';
+import 'package:flutter_messaging_ui/models/classes/user.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
@@ -87,19 +88,19 @@ class UsernameAvatarWidget extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         foregroundDecoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.white38,
-              Colors.white.withOpacity(0.0),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )
-        ),
+            gradient: LinearGradient(
+          colors: [
+            Colors.white38,
+            Colors.white.withOpacity(0.0),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )),
         child: Center(
           child: Text(
             username.substring(0, 2).toUpperCase(),
             style: TextStyle(
+              fontSize: size / 3.0,
               color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
@@ -136,5 +137,29 @@ class UserAvatarWidget extends StatelessWidget {
     } else {
       return placeholder;
     }
+  }
+}
+
+class ChatAvatar extends StatelessWidget {
+  const ChatAvatar({
+    Key? key,
+    required this.chat,
+    this.size = 52.0,
+  }) : super(key: key);
+
+  final Chat chat;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return chat is DirectChat
+        ? UserAvatarWidget(
+            size: size,
+            user: (chat as DirectChat).peer,
+          )
+        : UsernameAvatarWidget(
+            size: size,
+            username: chat.name,
+          );
   }
 }
