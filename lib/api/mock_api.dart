@@ -147,8 +147,8 @@ class MockApi {
     final result = <Chat, List<Message>>{};
 
     for (final chat in chats) {
-      // 20 <= n < 50, where n is the number of messages
-      final messageCount = 20 + _random.nextInt(30);
+      // 20 <= n < 1000, where n is the number of messages
+      final messageCount = 20 + _random.nextInt(980);
 
       final messages = <Message>[];
       for (var i = 0; i < messageCount; i++) {

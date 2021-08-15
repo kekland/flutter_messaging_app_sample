@@ -23,12 +23,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = context.theme.brightness == Brightness.light
+            ? Color(0xFFEAEFFA)
+            : context.theme.scaffoldBackgroundColor;
+
     return ChangeNotifierProvider(
       create: (_) => MessageListProvider(chatId: widget.chat.id)..initialize(),
       child: Scaffold(
-        backgroundColor: context.theme.brightness == Brightness.light
-            ? Color(0xFFEAEFFA)
-            : context.theme.scaffoldBackgroundColor,
+        backgroundColor: backgroundColor,
         appBar: AppBar(
           title: Row(
             children: [
@@ -66,6 +68,7 @@ class _ChatPageState extends State<ChatPage> {
             Expanded(
               child: ChatBody(
                 chat: widget.chat,
+                scaffoldBackgroundColor: backgroundColor,
               ),
             ),
             ChatInput(),

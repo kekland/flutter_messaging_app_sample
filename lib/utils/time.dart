@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-bool isToday(DateTime dateTime) {
-  final now = DateTime.now();
+bool isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
+}
 
-  return dateTime.year == now.year &&
-      dateTime.month == now.month &&
-      dateTime.day == now.day;
+bool isSameYear(DateTime a, DateTime b) {
+  return a.year == b.year;
 }
 
 bool isThisWeek({required BuildContext context, required DateTime dateTime}) {
@@ -18,12 +18,6 @@ bool isThisWeek({required BuildContext context, required DateTime dateTime}) {
   );
 
   return dateTime.isAfter(firstDayOfWeek);
-}
-
-bool isThisYear(DateTime dateTime) {
-  final now = DateTime.now();
-
-  return dateTime.year == now.year;
 }
 
 String formatDateOfTime({
@@ -43,7 +37,7 @@ String formatAbsoluteShortDateTime({
 }) {
   final localizations = MaterialLocalizations.of(context);
 
-  if (isToday(dateTime)) {
+  if (isSameDay(dateTime, DateTime.now())) {
     // Example: 13:40
     return localizations.formatTimeOfDay(
       TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
@@ -55,7 +49,7 @@ String formatAbsoluteShortDateTime({
     return localizations.formatFullDate(dateTime).split(',').first;
   }
 
-  if (isThisYear(dateTime)) {
+  if (isSameYear(dateTime, DateTime.now())) {
     // Example: Feb 21
     return localizations.formatShortMonthDay(dateTime);
   }

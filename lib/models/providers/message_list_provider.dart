@@ -29,5 +29,25 @@ class MessageListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isLoadingMore = false;
+  Future<void> loadMore() async {
+    if (_isLoadingMore) return;
+    _isLoadingMore = true;
+
+    try {
+      final values = await api.getPaginatedMessagesForChat(
+        chatId: chatId,
+        lastSeq: value?.first.seq ?? 0,
+      );
+
+      value = [...values, ...value!];
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoadingMore = false;
+    notifyListeners();
+  }
+
   bool get isLoading => _isLoading;
 }
