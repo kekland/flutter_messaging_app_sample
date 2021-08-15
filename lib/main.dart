@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messaging_ui/models/providers/chat_list_provider.dart';
 import 'package:flutter_messaging_ui/models/providers/theme_provider.dart';
 import 'package:flutter_messaging_ui/models/providers/user_provider.dart';
-import 'package:flutter_messaging_ui/pages/chat_list_page.dart';
+import 'package:flutter_messaging_ui/pages/auth_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
         theme: lightThemeData,
         darkTheme: darkThemeData,
         themeMode: context.watch<ThemeProvider>().themeMode,
-        home: ChatListPage(),
+        home: AuthPage(),
       ),
     );
   }
